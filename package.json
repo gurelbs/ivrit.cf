@@ -1,0 +1,30 @@
+{
+  "name": "ivrit-app",
+  "version": "1.0.0",
+  "description": "ivrit-app client",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "concurrently \"nodemon index.js\" \"cd client && npm start\"",
+    "git": "git add . && git commit -m \"updated\" && git push origin main",
+    "deploy": "rm -rf build && cd client && npm i && npm run build && cd .. && mv client/build/ build",
+    "heroku": "concurrently -m=1 \"npm i\" \"npm run deploy\" \"npm run git\" \"git push heroku origin main\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "ivrit": "^0.0.10",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "nodemon": "^2.0.13"
+  },
+  "engines": {
+    "node": "14.x",
+    "npm": "6.x"
+  }
+}
