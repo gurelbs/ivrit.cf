@@ -7,6 +7,9 @@ import Docs from './pages/Docs.component'
 import Playground from './pages/Playground.component'
 import Examples from './pages/Examples.component'
 import NotFound from './pages/NotFound.component'
+import Assistant from './pages/Assistant.component'
+import Footer from './components/Footer.component'
+
 // Mui
 import { Box, CssBaseline } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
@@ -19,6 +22,7 @@ export default function App() {
 		{ path: '/docs', name: 'documentation', Component: () => (<><Nav/><Docs/></>) },
 		{ path: '/playground', name: 'recognition', Component: () => (<><Nav/><Playground/></> )},
 		{ path: '/examples', name: 'homepage', Component: () => (<><Nav/><Examples/></>) },
+		{ path: '/assistant', name: 'homepage', Component: () => (<><Nav/><Assistant/></>) },
 	]
 	return (
 		<ThemeProvider theme={theme}>
@@ -26,7 +30,6 @@ export default function App() {
 					sx={{
 						display: 'flex',
 						flexDirection: 'column',
-						minHeight: '100vh',
 					}}>
 				<CssBaseline />
 				<Router>
@@ -34,7 +37,7 @@ export default function App() {
 						sx={{
 							display: 'flex',
 							flexDirection: 'column',
-							minHeight: '100vh',
+							marginTop: '5rem',
 						}}>
 						<Switch>
 							{routes.map(({ path, Component }) => (
@@ -44,6 +47,7 @@ export default function App() {
 						</Switch>
 					</Box>
 				</Router>
+				<Footer />
 		</Box>
 			</ThemeProvider>
 	)

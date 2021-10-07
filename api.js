@@ -1,12 +1,12 @@
 const { news, quickAnswer, lyrics } = require('ivrit')
 const {Router} = require('express');
 const router = new Router();
-
 router.get('/', (req, res) => {
 	res.send('wellcome to the hets API!')
 })
 
-router.get('/news', async (req, res) => {
+router
+.get('/news', async (req, res) => {
 	try {
 		let answer = await news(req.query.q)
 		res.json(answer)
@@ -14,8 +14,7 @@ router.get('/news', async (req, res) => {
 		console.log(error)
 	}
 })
-
-router.get('/quickAnswer', async (req, res) => {
+.get('/quickAnswer', async (req, res) => {
 	try {
 		let answer = await quickAnswer(req.query.q)
 		res.json(answer)
@@ -23,8 +22,7 @@ router.get('/quickAnswer', async (req, res) => {
 		console.log(error)
 	}
 })
-
-router.get('/lyrics', async (req, res) => {
+.get('/lyrics', async (req, res) => {
 	try {
 		let answer = await lyrics(req.query.q)
 		res.json(answer)

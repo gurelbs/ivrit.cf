@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import './../styles/nav.css'
+import MenuList from './MenuList.component'
 export default function App() {
   const [scrollY, setClientHeight] = useState(null)
   
@@ -24,11 +25,7 @@ export default function App() {
           </Link>
         </div>
         <div className="list_wrap">
-        <ul>
-          <li><Link title="מגרש משחקים" to="/playground">מגרש משחקים</Link></li>
-          <li><Link title="תיעוד" to="/docs">תיעוד</Link></li>
-          <li><Link title="דוגמאות" to="/examples">דוגמאות</Link></li>
-        </ul>
+          <MenuList />
         </div>
       </nav>
   );
