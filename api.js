@@ -1,4 +1,4 @@
-const { news, quickAnswer, lyrics } = require('ivrit')
+const { news, quickAnswer, lyrics, answer} = require('ivrit')
 const { Router } = require('express')
 const router = new Router()
 const { textToSpeech } = require('./textToSpeech')
@@ -10,10 +10,10 @@ router
 	.get('/quickAnswer', async (req, res) => {
 		try {
 			const { q } = req.query
-			result = await quickAnswer(q)
-			if (!result || result.length < 1) return res.json('no answer') 
-			console.log({ result })
-			const audioStream = await textToSpeech(JSON.stringify(result))
+			result = await answer(q)
+			if (!result) return res.json('no answer') 
+			console.log(result)
+			const audioStream = await textToSpeech(result)
 			res.set({
 				'Content-Type': 'audio/mpeg',
 				'Transfer-Encoding': 'chunked',

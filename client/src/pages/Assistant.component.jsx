@@ -38,9 +38,10 @@ export default function Assistant() {
 		try {
 			const { config } = await api.get(`/quickAnswer?q=${q}`)
 			const { data } = await api.get(`/quickAnswerData`)
+			console.log(data)
 			const {baseURL} = config
 			setAudioSrc(`${baseURL}/quickAnswer?q=${finalTranscript}`)
-			setResult(data)
+			setResult(data.result)
 		} catch (error) {
 			console.log(error)
 		}
@@ -69,7 +70,7 @@ export default function Assistant() {
 					{interimTranscript ? interimTranscript : finalTranscript}
 				</p>
 			{result && <div>
-				<code>{JSON.stringify(result)}</code>
+				<code>{result}</code>
 			</div>}
 				{audioSrc && (
 					<div>
