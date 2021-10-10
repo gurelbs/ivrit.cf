@@ -1,5 +1,5 @@
 import { create } from 'axios';
-let url;
+export let url;
 
 if (process.env.NODE_ENV !== 'production'){
     url = 'http://localhost:4000/api'
@@ -7,9 +7,6 @@ if (process.env.NODE_ENV !== 'production'){
     url = '/api'
 }
 
-
-const api = create({
+export const api = create({
     baseURL: url
 })
-
-export default api

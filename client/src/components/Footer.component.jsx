@@ -1,15 +1,15 @@
-import Link from '@mui/material/Link'
 import { Container, Typography, Box } from '@mui/material'
 function Copyright() {
 	/* eslint-disable react/jsx-no-target-blank */
 	return (
 		<Typography variant='body2' color='text.secondary'>
 			{'Copyright © '}
-			<Link color='inherit'>
+			{/* <Link color='inherit'> */}
 			<a href='https://guribs.com/' target='_blank'>
 				guribs
 			</a>
-			</Link>{' '}
+			{' '}
+			{/* </Link>{' '} */}
 			{new Date().getFullYear()}
 			{'.'}
 		</Typography>
