@@ -27,6 +27,9 @@ process.on('beforeExit', code => {
     process.exit(code)
   }, 100)
 })
+app.use((req,res) => {
+	res.status(404).send('404');
+})
 
 process.on('exit', code => {
   // Only synchronous calls
@@ -36,7 +39,6 @@ process.on('SIGTERM', signal => {
   console.log(`Process ${process.pid} received a SIGTERM signal`)
   process.exit(0)
 })
-
 process.on('SIGINT', signal => {
   console.log(`Process ${process.pid} has been interrupted`)
   process.exit(0)
@@ -49,14 +51,6 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled rejection at ', promise, `reason: ${err.message}`)
   process.exit(1)
 })
-process.on('ENOTCONN', _ => {
-  server.close(() => {
-    process.exit(0)
-  })
-  // If server hasn't finished in 1000ms, shut down process
-  setTimeout(() => {
-    process.exit(0)
-  }, 1000).unref() // Prevents the timeout from registering on event loop
-})
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
