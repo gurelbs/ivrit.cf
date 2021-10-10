@@ -33,14 +33,19 @@ export default function Assistant() {
 			fetchData(finalTranscript)
 		}
 	}, [finalTranscript,transcript])
-
+	function createMarkup() {
+		return {__html: result};
+	}
+	function RenderData() {
+		return <div dangerouslySetInnerHTML={createMarkup()} />;
+	}
 	async function fetchData(q) {
 		try {
-			const { config } = await api.get(`/quickAnswer?q=${q}`)
-			const { data } = await api.get(`/quickAnswerData`)
+			const { config } = await api.get(`/answer?q=${q}`)
+			const { data } = await api.get(`/dataAnswer`)
 			console.log(data)
 			const {baseURL} = config
-			setAudioSrc(`${baseURL}/quickAnswer?q=${finalTranscript}`)
+			setAudioSrc(`${baseURL}/answer?q=${finalTranscript}`)
 			setResult(data.result)
 		} catch (error) {
 			console.log(error)
@@ -70,7 +75,7 @@ export default function Assistant() {
 					{interimTranscript ? interimTranscript : finalTranscript}
 				</p>
 			{result && <div>
-				<code>{result}</code>
+					<RenderData/>
 			</div>}
 				{audioSrc && (
 					<div>

@@ -7,12 +7,11 @@ router
 	.get('/', (req, res) => {
 		res.send('wellcome to the ivrit API!')
 	})
-	.get('/quickAnswer', async (req, res) => {
+	.get('/answer', async (req, res) => {
 		try {
 			const { q } = req.query
 			result = await answer(q)
 			if (!result) return res.json('no answer') 
-			console.log(result)
 			const audioStream = await textToSpeech(result)
 			res.set({
 				'Content-Type': 'audio/mpeg',
@@ -23,7 +22,7 @@ router
 			console.log(error)
 		}
 	})
-	.get('/quickAnswerData', (req, res) => {
+	.get('/dataAnswer', (req, res) => {
 		try {
 			if (!result) return res.json('no answer')
 			res.json({result})
