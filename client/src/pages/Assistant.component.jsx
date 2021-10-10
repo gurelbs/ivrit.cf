@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import {api} from './../api/api'
+import axios from 'axios'
 // mui
 import { Box, Button } from '@mui/material'
 import ReactAudioPlayer from 'react-audio-player'
 
 export default function Assistant() {
+	const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 	const [audioSrc, setAudioSrc] = useState(null)
 	const [loading, setLoading] = useState(false)
 	const [result, setResult] = useState(null)
@@ -41,14 +44,15 @@ export default function Assistant() {
 	}
 	async function fetchData(q) {
 		try {
-			const { config } = await api.get(`/answer?q=${q}`)
-			const { data } = await api.get(`/dataAnswer`)
+			const { config } = await api.get(`/answer?q=${q}`,{CancelToken: source.token,})
+			const { data } = await api.get(`/dataAnswer`,{CancelToken: source.token,})
 			console.log(data)
 			const {baseURL} = config
 			setAudioSrc(`${baseURL}/answer?q=${finalTranscript}`)
 			setResult(data.result)
 		} catch (error) {
 			console.log(error)
+			setResult('לא מצאתי תשובה, אבל אפשר לנסות שוב עם ביטוי דומה')
 		}
 	}
 	function btnClick(e){
