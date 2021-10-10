@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "concurrently \"nodemon index.js\" \"cd client && npm start\"",
     "git": "git add . && git commit -m \"updated\" && git push origin main",
-    "rebuild-client": "concurrently \"rm -rf build\" \"npm i -p client\" \"npm run build -p client\" \"mv client/build/ build\"",
+    "rebuild-client": "concurrently \"rm -rf build\" \"npm i --prefix client\" \"npm run build --prefix client\" \"mv client/build/ build\"",
     "heroku": "concurrently \"npm run rebuild-client\" \"npm run git\" \"git push heroku main\""
   },
   "keywords": [],
