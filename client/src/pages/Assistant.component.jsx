@@ -51,6 +51,10 @@ export default function Assistant() {
 			console.log(error)
 		}
 	}
+	function btnClick(e){
+		e.preventDefault()
+		return !listening ? start : stop
+	}
 	if (!browserSupportsSpeechRecognition) {
 		return <span>Browser doesn't support speech recognition.</span>
 	}
@@ -64,7 +68,8 @@ export default function Assistant() {
 				alignItems: 'center',
 				textAlign: 'center',
 			}}>
-			<Button disabled={loading} onClick={!listening ? start : stop} maxwidth='sm'>
+
+			<Button disabled={loading} onClick={btnClick}  maxwidth='sm'>
 				עוזר קולי {listening ? 'פעיל' : 'כבוי'}
 			</Button>
 			<Button onClick={resetTranscript} maxwidth='sm'>
