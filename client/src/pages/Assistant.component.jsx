@@ -69,7 +69,7 @@ export default function Assistant() {
 					{interimTranscript ? interimTranscript : finalTranscript}
 				</p>
 			{result && <div>
-				<code>{result}</code>
+				<code>{JSON.stringify(result)}</code>
 			</div>}
 				{audioSrc && (
 					<div>
