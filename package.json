@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "concurrently \"nodemon index.js\" \"cd client && npm start\"",
-    "git": "git add . && git commit -m \"updated\" && git push -f origin main",
-    "rebuild-client": "rm -rf build && cd client && npm i && npm run build && cd .. && mv client/build/ build",
+    "git": "git add . && git commit -m \"updated\" && git push origin main",
+    "rebuild-client": "concurrently \"rm -rf build\" \"npm i -p client\" \"npm run build -p client\" \"mv client/build/ build\"",
     "heroku": "concurrently -m=1\"npm run rebuild-client\" \"npm run git\" \"git push heroku main\""
   },
   "keywords": [],
