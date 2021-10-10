@@ -14,7 +14,7 @@ export default function MenuList() {
 	const list = [
 		{
 			name: 'assistant',
-			heName: 'עוזר קולי',
+			heName: 'עוזרת קולית',
 			to: '/assistant',
 		},
 		{
