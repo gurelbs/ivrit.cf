@@ -58,12 +58,12 @@ router
 			console.log(error)
 		}
 	})
-get('/cats', async (req, res) => {
-	try {
-		const answer = cats()
-		res.send({ answer })
-	} catch (error) {
-		console.log(error)
-	}
-})
+	.get('/cats', async (req, res) => {
+		try {
+			const answer = cats()
+			res.send({ answer })
+		} catch (error) {
+			console.log(error)
+		}
+	})
 module.exports = router
