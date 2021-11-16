@@ -1,6 +1,5 @@
-const { news, quickAnswer, lyrics, answer, cats } = require('ivrit')
+const { news, quickAnswer, lyrics, answer, getCatsBreeds } = require('ivrit')
 const gptResponse = require('./OpenAI')
-
 const { Router } = require('express')
 const router = new Router()
 const { textToSpeech } = require('./textToSpeech')
@@ -60,7 +59,7 @@ router
 	})
 	.get('/cats', async (req, res) => {
 		try {
-			const answer = cats()
+			const answer = await getCatsBreeds()
 			res.send({ answer })
 		} catch (error) {
 			console.log(error)
