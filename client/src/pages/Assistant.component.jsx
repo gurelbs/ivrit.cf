@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import ReactAudioPlayer from 'react-audio-player'
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import { api } from './../api/api'
+import React, { useEffect, useState, useCallback } from 'react'
 import axios from 'axios'
+import ReactAudioPlayer from 'react-audio-player'
+import Typewriter from 'typewriter-effect'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 // mui
-import { Box, Typography,Badge } from '@mui/material'
-import Fab from '@mui/material/Fab'
-import MicIcon from '@mui/icons-material/Mic';
-import MicOffIcon from '@mui/icons-material/MicOff';
+import { Box, Typography } from '@mui/material'
+import InputWithMic from './../components/InputWithMic'
+import { api } from './../api/api'
+// ------------------------------------
 export default function Assistant() {
 	const CancelToken = axios.CancelToken
 	const source = CancelToken.source()
 	const [audioSrc, setAudioSrc] = useState(null)
 	const [loading, setLoading] = useState(false)
 	const [result, setResult] = useState(null)
+	const [query, setQuery] = useState('')
 	const {
 		transcript,
 		interimTranscript,
@@ -29,45 +30,53 @@ export default function Assistant() {
 			interimResults: true,
 			language: 'iw-IL',
 		})
-	const stop = () => stopListening()
-	const abort = () => abortListening()
-		useEffect(() => {
-			if(finalTranscript === 'דורין'){
+	const stop = useCallback(() => stopListening(), [stopListening])
+	const abort = useCallback(() => abortListening(), [abortListening])
+	const fetchData = useCallback(
+		async q => {
+			try {
 				setResult(null)
-				setAudioSrc(null)
-				setLoading(false)
+				const { config } = await api.get(`/answer?q=${q}`, { CancelToken: source.token })
+				const { data } = await api.get(`/dataAnswer`, { CancelToken: source.token })
+				console.log(data)
+				const { baseURL } = config
+				setAudioSrc(`${baseURL}/answer?q=${q}`)
+				setResult(data.result)
 				resetTranscript()
-				abort()
-				start()
+			} catch (error) {
+				console.log(error)
+				setResult('לא מצאתי תשובה, אבל אפשר לנסות שוב עם ביטוי דומה')
+				resetTranscript()
+				setResult(null)
 			}
-		})
+		},
+		[resetTranscript, source]
+	)
+
 	useEffect(() => {
-		if (finalTranscript === transcript && finalTranscript !== '' && finalTranscript !== 'דורין') {
+		if (finalTranscript === 'כיבוי') {
+			setResult(null)
+			setAudioSrc(null)
+			setLoading(false)
+			resetTranscript()
+			stop()
+		}
+	}, [finalTranscript, resetTranscript, stop])
+
+	useEffect(() => {
+		if (finalTranscript === transcript && finalTranscript !== '' && finalTranscript !== 'כיבוי') {
 			setLoading(true)
 			fetchData(finalTranscript)
+			setLoading(false)
 		}
-	}, [finalTranscript, transcript])
-	function createMarkup() {
-		return { __html: result }
-	}
-	function RenderData() {
-		return <div dangerouslySetInnerHTML={createMarkup()} />
-	}
-	async function fetchData(q) {
-		try {
-			const { config } = await api.get(`/answer?q=${q}`, { CancelToken: source.token })
-			const { data } = await api.get(`/dataAnswer`, { CancelToken: source.token })
-			console.log(data)
-			const { baseURL } = config
-			setAudioSrc(`${baseURL}/answer?q=${finalTranscript}`)
-			setResult(data.result)
-		} catch (error) {
-			console.log(error)
-			setResult('לא מצאתי תשובה, אבל אפשר לנסות שוב עם ביטוי דומה')
-		}
-	}
+	}, [finalTranscript, transcript, fetchData])
+
 	if (!browserSupportsSpeechRecognition) {
 		return <span>Browser doesn't support speech recognition.</span>
+	}
+	function hendleAudio() {
+		stop()
+		setLoading(false)
 	}
 	return (
 		<Box
@@ -80,49 +89,66 @@ export default function Assistant() {
 				alignItems: 'center',
 				textAlign: 'center',
 			}}>
-				<Badge color="secondary" variant={listening ? "dot" : null} overlap="circular" badgeContent={listening ? " " : null}>
-					<Fab
-					variant={listening ? 'extended' : 'circular'}
-					disabled={loading}
-					onClick={!listening ? start : stop}
-					maxwidth='sm'>
-					{listening ? <MicIcon/> : <MicOffIcon/>}
-				</Fab>
-			</Badge>
+			<Box>
+				<Typewriter
+					onInit={typewriter =>
+						typewriter.typeString('אפשר להקליד שאלה או פשוט ללחוץ על הכפתור ולהתחיל לדבר').start()
+					}
+					options={{
+						delay: 40,
+						autoStart: true,
+					}}
+				/>
+			</Box>
+			<InputWithMic
+				value={query}
+				loading={loading}
+				hendleClick={!listening ? start : stop}
+				hendleChange={e => setQuery(e.target.value)}
+				listening={listening}
+				hendleKeyDown={e => {
+					if (e.key === 'Enter') {
+						setLoading(true)
+						fetchData(query)
+						setQuery('')
+						setLoading(false)
+					}
+				}}
+			/>
 			<div>
-				<Typography fontWeight={400}>{interimTranscript ? interimTranscript : finalTranscript}</Typography>
+				<Typography fontWeight={400}>
+					{interimTranscript ? interimTranscript : finalTranscript}
+				</Typography>
 				{result && (
-					<Box sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						maxWidth:400,
-						justifyContent: 'center',
-						alignItems: 'center',
-						textAlign: 'center',
-					}}>
-						<RenderData />
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'column',
+							maxWidth: 400,
+							justifyContent: 'center',
+							alignItems: 'center',
+							textAlign: 'center',
+						}}>
+						<Typewriter
+							onInit={typewriter => typewriter.typeString(result).start()}
+							options={{
+								delay: 40,
+								autoStart: true,
+							}}
+						/>
 					</Box>
 				)}
 				{audioSrc && (
-					<div style={{marginTop:'1rem'}}>
+					<div style={{ marginTop: '1rem' }}>
 						<ReactAudioPlayer
 							src={audioSrc}
 							autoPlay={true}
 							controls
-							onCanPlay={() => setLoading(false)}
-							onPlay={() => stop()}
-							onEnded={() => {
-								resetTranscript()
-								start()
-							}}
-							onAbort={() => {
-								resetTranscript()
-								start()
-							}}
-							onPause={() => {
-								resetTranscript()
-								start()
-							}}
+							onPlay={() => hendleAudio()}
+							onEnded={() => hendleAudio()}
+							onAbort={() => hendleAudio()}
+							onPause={() => hendleAudio()}
+							onError={() => hendleAudio()}
 						/>
 					</div>
 				)}

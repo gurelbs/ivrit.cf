@@ -53,13 +53,13 @@ export default function Playground() {
     }
   }, [currentService,url,q])
 
-  useEffect(() => {
-    console.log(servicesInfo);
-  },[servicesInfo])
+  // useEffect(() => {
+  //   console.log(servicesInfo);
+  // },[servicesInfo])
   
-  useEffect(() => {
-    console.log(result);
-  },[result])
+  // useEffect(() => {
+  //   console.log(result);
+  // },[result])
 
   function renderAnswersByService(service) {
     if (service.name === 'news'){
